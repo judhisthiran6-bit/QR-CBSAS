@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily QR Attendance System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- QR generator -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <!-- QR scanner -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+
+<!-- =====================================================
+     LOGIN PAGE
+===================================================== -->
+<div id="loginPage" class="page">
+    <div class="login-container">
+        <div class="login-left">
+            <div class="brand-large">QR<span>Attend</span></div>
+            <h1>Daily Attendance</h1>
+            <p>A secure QR-code based daily attendance tracking system.</p>
+            <div class="feature-list">
+                <div>✓ Fast daily check-in</div>
+                <div>✓ Temporary QR codes</div>
+                <div>✓ Real-time attendance reports</div>
+                <div>✓ Automated history tracking</div>
+            </div>
+        </div>
+
+        <div class="login-card">
+            <h2>Welcome Back</h2>
+            <p class="muted">Login to your account</p>
+
+            <form id="loginForm">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="Enter email" required>
+
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter password" required>
+
+                <button type="submit" class="primary-btn full">Login</button>
+            </form>
+
+            <div id="loginMessage" class="message"></div>
+
+            <div class="login-links">
+                <button onclick="showRegister('student')" class="link-btn">Student Registration</button>
+                <button onclick="showRegister('teacher')" class="link-btn">Teacher Registration</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================
+     REGISTRATION PAGE
+===================================================== -->
+<div id="registerPage" class="page hidden">
+    <div class="login-card register-card">
+        <button class="back-btn" onclick="showLogin()">← Back to Login</button>
+
+        <h2 id="registerTitle">Student Registration</h2>
+
+        <form id="registerForm">
+            <label>Full Name</label>
+            <input type="text" id="registerName" required>
+
+            <label>Email</label>
+            <input type="email" id="registerEmail" required>
+
+            <label>Password</label>
+            <input type="password" id="registerPassword" required>
+
+            <div id="studentFields">
+                <label>Roll Number</label>
+                <input type="text" id="rollNumber" placeholder="Example: BCA001">
+            </div>
+
+            <div id="teacherFields" class="hidden">
+                <label>Employee ID</label>
+                <input type="text" id="employeeId" placeholder="Example: T001">
+            </div>
+
+            <button type="submit" class="primary-btn full">Create Account</button>
+        </form>
+
+        <div id="registerMessage" class="message"></div>
+    </div>
+</div>
+
+
+<!-- =====================================================
+     APPLICATION
+===================================================== -->
+<div id="appPage" class="hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">QR<span>Attend</span></div>
+        <div class="user-box">
+            <div id="sidebarUserName" class="user-name">User</div>
+            <div id="sidebarUserRole" class="user-role">Role</div>
+        </div>
+        <nav id="navigation"></nav>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <h2 id="pageTitle">Dashboard</h2>
+                <p id="pageSubtitle">Daily QR Attendance System</p>
+            </div>
+            <div id="topUserName" class="top-user"></div>
+        </header>
+
+        <!-- =========================================
+             ADMIN DASHBOARD
+        ========================================== -->
+        <section id="adminDashboard" class="dashboard-section hidden">
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <span>Total Users</span>
+                    <strong id="adminUsersCount">0</strong>
+                </div>
+                <div class="stat-card purple">
+                    <span>Total Teachers</span>
+                    <strong id="adminTeachersCount">0</strong>
+                </div>
+                <div class="stat-card orange">
+                    <span>Attendance Records</span>
+                    <strong id="adminAttendanceCount">0</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Users</h3>
+                    <button onclick="loadAdminUsers()" class="small-btn">Refresh</button>
+                </div>
+                <div id="usersTable" class="table-container"></div>
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             TEACHER DASHBOARD
+        ========================================== -->
+        <section id="teacherDashboard" class="dashboard-section hidden">
+            <div class="stats-grid">
+                <div class="stat-card green">
+                    <span>Active Sessions</span>
+                    <strong id="teacherSessionCount">0</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Start Daily Attendance</h3>
+                <form id="attendanceForm">
+                    <label>
+                        QR Expiration <span class="muted">(minutes)</span>
+                    </label>
+                    <input type="number" id="expiryMinutes" value="2" min="1" max="30" required>
+
+                    <button class="primary-btn">Generate Attendance QR</button>
+                </form>
+                <div id="teacherMessage" class="message"></div>
+            </div>
+
+            <!-- QR Display -->
+            <div id="qrCard" class="card qr-card hidden">
+                <h3>Daily Attendance QR Code</h3>
+                <p id="qrSubject">Daily Attendance</p>
+                <div id="qrcode" class="qr-container"></div>
+                <div id="qrTimer" class="qr-timer">02:00</div>
+                <p class="muted">Students should scan this QR code before it expires.</p>
+                <button onclick="closeAttendanceSession()" class="danger-btn">Close Session</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Attendance Sessions</h3>
+                    <button onclick="loadTeacherSessions()" class="small-btn">Refresh</button>
+                </div>
+                <div id="teacherSessionsTable" class="table-container"></div>
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             STUDENT DASHBOARD
+        ========================================== -->
+        <section id="studentDashboard" class="dashboard-section hidden">
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <span>Overall Attendance</span>
+                    <strong id="overallAttendance">0%</strong>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <!-- Scanner -->
+                <div class="card">
+                    <h3>Scan Attendance QR</h3>
+                    <p class="muted">Point your camera at the teacher's QR code.</p>
+                    <div id="reader" class="scanner"></div>
+
+                    <button id="startScannerBtn" onclick="startScanner()" class="primary-btn full">Start Scanner</button>
+                    <button id="stopScannerBtn" onclick="stopScanner()" class="danger-btn full hidden">Stop Scanner</button>
+
+                    <div id="scanMessage" class="message"></div>
+                </div>
+
+                <!-- Attendance summary -->
+                <div class="card">
+                    <h3>Daily Attendance Summary</h3>
+                    <div id="studentSummary"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Attendance History</h3>
+                    <button onclick="loadStudentAttendance()" class="small-btn">Refresh</button>
+                </div>
+                <div id="studentAttendanceTable" class="table-container"></div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
