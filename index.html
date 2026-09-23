@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attendance System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="landing-page">
+    <div class="landing-inner">
+        <div class="brand-large">QR<span>Attend</span></div>
+        <h1>QR Code Attendance System</h1>
+        <p>Fast, contactless attendance for classrooms. Teachers generate a fresh QR code every session; students scan it to check in instantly.</p>
+
+        <div class="role-cards">
+            <a href="teacher-login.html" class="role-card theme-teacher">
+                <div class="role-icon">🧑‍🏫</div>
+                <h2>I'm a Teacher</h2>
+                <p>Start sessions, generate QR codes, and track attendance live.</p>
+                <span class="role-card-btn">Continue as Teacher →</span>
+            </a>
+
+            <a href="student-login.html" class="role-card theme-student">
+                <div class="role-icon">🎓</div>
+                <h2>I'm a Student</h2>
+                <p>Scan the daily QR code and keep track of your attendance.</p>
+                <span class="role-card-btn">Continue as Student →</span>
+            </a>
+        </div>
+
+        <div class="admin-link">
+            Are you an administrator? <a href="admin-login.html">Admin login</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Already logged in? Skip straight to the dashboard.
+    if (localStorage.getItem("accessToken") && localStorage.getItem("currentUser")) {
+        window.location.href = "app.html";
+    }
+</script>
+</body>
+</html>
