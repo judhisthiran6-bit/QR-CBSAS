@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Student Dashboard - QR Attendance System</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="appPage">
+    <div class="sidebar">
+        <div class="brand">QR<span>Attend</span></div>
+        <div class="user-box">
+            <div class="user-name" id="sidebarUserName">-</div>
+            <div class="user-role" id="sidebarUserRole">-</div>
+        </div>
+        <div id="navigation">
+            <button class="nav-btn active" onclick="loadDashboard()">📊 Dashboard</button>
+            <button class="nav-btn" onclick="loadAttendance()">📋 Attendance History</button>
+        </div>
+        <button class="logout-btn" onclick="logout()">↪ Logout</button>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div>
+                <h2 id="pageTitle">Dashboard</h2>
+                <p>Scan today's QR to check in</p>
+            </div>
+            <div class="top-user" id="topUserName">-</div>
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns: 1fr; max-width: 260px;">
+            <div class="stat-card"><span>Overall Attendance</span><strong id="overallAttendance">0%</strong></div>
+        </div>
+
+        <div class="content-grid">
+            <div class="card">
+                <h3>Scan Today's QR Code</h3>
+                <div id="reader" class="scanner"></div>
+                <button id="startScannerBtn" class="primary-btn full" onclick="startScanner()">Start Scanning</button>
+                <button id="stopScannerBtn" class="danger-btn full hidden" onclick="stopScanner()">Stop Scanning</button>
+                <div id="scanMessage" class="message"></div>
+            </div>
+            <div class="card">
+                <h3>Attendance Summary</h3>
+                <div id="studentSummary"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><h3>Attendance History</h3></div>
+            <div class="table-container" id="studentAttendanceTable"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
