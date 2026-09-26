@@ -4,7 +4,7 @@
    and teacher-site apps use.
 ===================================================== */
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://intranet-perfect-purchases-holdem.trycloudflare.com/api";
 
 let currentUser = null;
 let accessToken = null;
